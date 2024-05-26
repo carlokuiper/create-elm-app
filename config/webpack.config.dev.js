@@ -172,6 +172,7 @@ module.exports = {
           {
             loader: require.resolve('elm-asset-webpack-loader'),
           },
+          { loader: 'elm-reloader' },
           {
             loader: require.resolve('elm-webpack-loader'),
             options: {

@@ -4,7 +4,7 @@ const autoprefixer = require('autoprefixer');
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
@@ -12,7 +12,7 @@ const CopyPlugin = require('copy-webpack-plugin');
 const workboxPlugin = require('workbox-webpack-plugin');
 const paths = require('../config/paths');
 const getClientEnvironment = require('./env');
-const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const safePostCssParser = require('postcss-safe-parser');
 
 // Webpack uses `publicPath` to determine where the app is being served from.
@@ -59,9 +59,8 @@ module.exports = {
   },
   optimization: {
     minimizer: [
-      new UglifyJsPlugin({
-        uglifyOptions: {
-          warnings: false,
+      new TerserPlugin({
+        terserOptions: {
           // ES5 is required in the minified code if you want compatibility with IE11,
           // otherwise you can bump it up to ES8
           ecma: 5,
@@ -110,8 +109,8 @@ module.exports = {
         cache: true,
         sourceMap: shouldUseSourceMap,
       }),
-      new OptimizeCSSAssetsPlugin({
-        cssProcesorOptions: {
+      new CssMinimizerPlugin({
+        minimizerOptions: {
           parser: safePostCssParser,
           map: shouldUseSourceMap
             ? {
@@ -222,6 +221,7 @@ module.exports = {
           {
             loader: require.resolve('elm-asset-webpack-loader'),
           },
+          { loader: 'elm-reloader' },
           {
             // Use the local installation of elm make
             loader: require.resolve('elm-webpack-loader'),
